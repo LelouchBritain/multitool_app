@@ -1,13 +1,13 @@
-@import "@/sass/var"
-@import "@/sass/mixins"
+@use "@/sass/vars" as vars
+@use "@/sass/mixins" as mixins
 .main-header
     width: 100%
     padding: 24px 0
-    box-shadow: $shadow-down
-    background-color: $primary-color
+    box-shadow: vars.$shadow-down
+    background-color: vars.$primary-color
     text-color: #fff
     &__container
-        @include common-pos
+        @include mixins.common-pos
         margin: 0 auto
     ul
         display: flex

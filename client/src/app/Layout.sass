@@ -1,4 +1,4 @@
-@import "@/sass/mixins"
+@use "@/sass/mixins" as mixins
 
 .layout    
    max-width: 100vw
@@ -7,5 +7,5 @@
    background-color: #303030
    color: white
    &__container
-      @include common-pos
+      @include mixins.common-pos
       padding: 20px 0
