@@ -1,0 +1,15 @@
+@import "@/sass/var"
+@import "@/sass/mixins"
+.main-header
+    width: 100%
+    padding: 24px 0
+    box-shadow: $shadow-down
+    background-color: $primary-color
+    text-color: #fff
+    &__container
+        @include common-pos
+        margin: 0 auto
+    ul
+        display: flex
+        gap: 40px
+        list-style: none
