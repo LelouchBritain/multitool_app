@@ -21,11 +21,30 @@ const renameCountries = async (cities: ICity[]) => {
 export default function SearchInput() {
   const [inputText, setInputText] = useState<string>("");
   const [cityData, setCityData] = useState<ICity[]>([]);
+  const [isPopupVisible, setisPopupVisible] = useState<boolean>(true);
 
-  const handleRowClick = (longitude: number, latitude: number) => {
+  const handleBlur = () => {
+    setTimeout(() => setisPopupVisible(false), 150);
+  };
+  const handleFocus = async () => {
+    if (inputText.trim().length > 0 && cityData.length > 0) {
+      setisPopupVisible(true);
+    }
+  };
+
+  const handleRowClick = async (longitude: number, latitude: number) => {
     try {
-      
-    } catch (error) {}
+      console.log("long:", longitude);
+      console.log("latitude:", latitude);
+
+      const { data } = await axiosApiClient.get(
+        `/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${process.env.WEATHER_API_KEY}`
+      );
+      console.log(data);
+      setCityData([]);
+    } catch (err) {
+      console.error("Error:", err);
+    }
   };
 
   useEffect(() => {
@@ -33,7 +52,6 @@ export default function SearchInput() {
 
     const timeOut = setTimeout(async () => {
       try {
-        console.log(process.env.WEATHER_API_KEY);
         const { data } = await axiosApiClient.get(
           `/geo/1.0/direct?q=${inputText}&limit=5&appid=${process.env.WEATHER_API_KEY}`
         );
@@ -43,8 +61,8 @@ export default function SearchInput() {
           const renamedCountries = await renameCountries(cities);
           setCityData(() => [...renamedCountries]);
         }
-      } catch (error) {
-        console.error("Error", error);
+      } catch (err) {
+        console.error("Error", err);
       }
     }, 1500);
 
@@ -58,8 +76,10 @@ export default function SearchInput() {
         id="geo-search"
         value={inputText}
         onChange={(e) => setInputText(e.target.value)}
+        onFocus={() => handleFocus()}
+        onBlur={(e) => handleBlur()}
       />
-      {cityData.length > 0 && (
+      {cityData.length > 0 && isPopupVisible && (
         <div className="search__popup">
           <div className="search__info">
             <p className="search__name">Name</p>
