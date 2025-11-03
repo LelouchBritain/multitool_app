@@ -7,6 +7,7 @@ const kelToCel = (numKel: number) => {
 
 export default function WeatherDisplay() {
   const { weatherData, unit } = useWeather();
+  const symbol = unit === "celcius" ? "C" : "K";
 
   if (!weatherData) return <p>Choose the region to see the forecast</p>;
 
@@ -18,8 +19,8 @@ export default function WeatherDisplay() {
 
   return (
     <div>
-      <p>Temperature: {temp}</p>
-      <p>Feels like: {feels}</p>
+      <p>Temperature: {temp}° {symbol}</p>
+      <p>Feels like: {feels}° {symbol}</p>
     </div>
   );
 }
