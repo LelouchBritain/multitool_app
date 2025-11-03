@@ -1,9 +1,10 @@
 "use client";
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./SearchInput.sass";
 import { axiosApiClient } from "@/helpers/axiosApiClient";
 import { ICity } from "@/interfaces/ICity";
 import axios from "axios";
+import { useWeather } from "@/context/WeatherContext";
 
 const renameCountries = async (cities: ICity[]) => {
   const updatedCountryNames = await Promise.all(
@@ -22,6 +23,7 @@ export default function SearchInput() {
   const [inputText, setInputText] = useState<string>("");
   const [cityData, setCityData] = useState<ICity[]>([]);
   const [isPopupVisible, setisPopupVisible] = useState<boolean>(true);
+  const { setWeatherData } = useWeather();
 
   const handleBlur = () => {
     setTimeout(() => setisPopupVisible(false), 150);
@@ -34,13 +36,12 @@ export default function SearchInput() {
 
   const handleRowClick = async (longitude: number, latitude: number) => {
     try {
-      console.log("long:", longitude);
-      console.log("latitude:", latitude);
-
       const { data } = await axiosApiClient.get(
         `/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${process.env.WEATHER_API_KEY}`
       );
       console.log(data);
+
+      setWeatherData(data);
       setCityData([]);
     } catch (err) {
       console.error("Error:", err);
@@ -78,6 +79,7 @@ export default function SearchInput() {
         onChange={(e) => setInputText(e.target.value)}
         onFocus={() => handleFocus()}
         onBlur={(e) => handleBlur()}
+        autoComplete="off"
       />
       {cityData.length > 0 && isPopupVisible && (
         <div className="search__popup">
@@ -86,10 +88,10 @@ export default function SearchInput() {
             <p className="search__country">Country</p>
             <p className="search__state">State</p>
           </div>
-          {cityData.map((city) => (
+          {cityData.map((city, index) => (
             <div
               className="search__row"
-              key={city.zip}
+              key={crypto.randomUUID()}
               onClick={() => handleRowClick(city.lon, city.lat)}
             >
               <p className="search__name">{city.name}</p>
