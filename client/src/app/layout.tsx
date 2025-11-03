@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import "./Layout.sass";
 import MainHeader from "@/components/MainHeader/MainHeader";
+import { WeatherProvider } from "@/context/WeatherContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,7 +30,9 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <div className="layout">
           <MainHeader />
-          <div className="layout__container">{children}</div>
+          <div className="layout__container">
+            <WeatherProvider>{children}</WeatherProvider>
+          </div>
         </div>
       </body>
     </html>
